@@ -1,15 +1,18 @@
 一定要把setting.xml放到.m2下面，不是在项目的根目录，是在maven的根目录，不然会一直401....
+
 like this.
+
 `SENRSL_MAC:~ XXX$ ls .m2/
 repository	settings.xml
 SENRSL_MAC:~ XXX$ `
 
 eclipse 上的配置部署，新建一个Run config,执行命令clean deploy，运行就ok....
-![image](https://github.com/senRsl/bintray-examples/raw/master/doc/deploy.png)
+![eclipse config](https://github.com/senRsl/bintray-examples/raw/master/doc/deploy.png)
 
 终于看到了成功
 
-`[INFO] Scanning for projects...
+<pre>
+[INFO] Scanning for projects...
 [INFO] ------------------------------------------------------------------------
 [INFO] Reactor Build Order:
 [INFO] 
@@ -232,4 +235,5 @@ Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
 [INFO] Total time: 53.245 s
 [INFO] Finished at: 2018-06-19T10:21:25+08:00
 [INFO] Final Memory: 27M/297M
-[INFO] ------------------------------------------------------------------------`
+[INFO] ------------------------------------------------------------------------
+</pre>
