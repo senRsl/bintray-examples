@@ -2,16 +2,18 @@
 
 like this.
 
-`SENRSL_MAC:~ XXX$ ls .m2/
+```
+SENRSL_MAC:~ XXX$ ls .m2/
 repository	settings.xml
-SENRSL_MAC:~ XXX$ `
+SENRSL_MAC:~ XXX$ 
+```
 
 eclipse 上的配置部署，新建一个Run config,执行命令clean deploy，运行就ok....
 ![eclipse config](https://github.com/senRsl/bintray-examples/raw/master/doc/deploy.png)
 
 终于看到了成功
 
-<pre>
+```
 [INFO] Scanning for projects...
 [INFO] ------------------------------------------------------------------------
 [INFO] Reactor Build Order:
@@ -236,4 +238,6 @@ Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
 [INFO] Finished at: 2018-06-19T10:21:25+08:00
 [INFO] Final Memory: 27M/297M
 [INFO] ------------------------------------------------------------------------
-</pre>
+```
+
+这标签真难用。。。。
