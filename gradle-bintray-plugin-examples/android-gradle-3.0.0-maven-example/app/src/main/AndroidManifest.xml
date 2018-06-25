@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.bintray.example">
+    package="dc.test.pubb">
 
     <application
         android:allowBackup="true"

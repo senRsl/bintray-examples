@@ -1,0 +1,70 @@
+// apply plugin: 'java-library'
+// dependencies {
+//     implementation fileTree(dir: 'libs', include: ['*.jar'])
+// }
+// sourceCompatibility = "1.7"
+// targetCompatibility = "1.7"
+//-----------------------------------------
+// SENRSL_MAC:groovy XXX$ gradle testGroovy
+// > Task :groovy:testGroovy
+// start execute testGroovy
+// have fun!
+// have fun from sysout
+// BUILD SUCCESSFUL in 2s
+// 1 actionable task: 1 executed
+// SENRSL_MAC:groovy XXX$ 
+task(testGroovy).doLast {
+    println "start execute testGroovy"
+    haveFun();
+}
+def haveFun() {
+    println "have fun!"
+    System.out.println("have fun from sysout");
+    1
+    def file1 = new File("a.txt");
+    def file2 = new File("a.txt");
+    assert file1 == file2
+    assert !file1.is(file2)
+}
+class Book {
+    private String name
+
+    String getName() { return name }
+
+    void setName(String name) { this.name = name }
+}
+//-----------------------------------------
+// SENRSL_MAC:groovy XXX$ gradle techTask
+// > Configure project :groovy
+// hello task!!!!
+// BUILD SUCCESSFUL in 1s
+// SENRSL_MAC:groovy XXX$ 
+task techTask {
+    println "hello task!!!!"
+}
+//-----------------------------------------
+// doFirst：task执行时，最开始的操作
+// doLast：task执行时，最后的操作
+// SENRSL_MAC:groovy XXX$ gradle techMethod
+// > Configure project :groovy
+// hello task!!!!
+// tech method.
+// > Task :groovy:techMethod
+// tech method do first
+// tech method do last
+// BUILD SUCCESSFUL in 1s
+// 1 actionable task: 1 executed
+// SENRSL_MAC:groovy XXX$ 
+task techMethod {
+    println "tech method."
+}
+techMethod.doLast {
+    println "tech method do last"
+}
+techMethod.doFirst {
+    println "tech method do first"
+}
+//-----------------------------------------
+dependencies {
+    implementation files('libs/pub-0.2.10.jar')
+}

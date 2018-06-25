@@ -1,0 +1,45 @@
+> Task :app:bintrayUpload 
+Putting task artifact state for task ':app:bintrayUpload' into context took 0.0 secs.
+Up-to-date check for task ':app:bintrayUpload' took 0.0 secs. It is not up-to-date because:
+  Task has not declared any outputs.
+Gradle Bintray Plugin version: 1.8.1
+maven plugin was not applied, no pom will be uploaded.
+Using proxy null:@127.0.0.1:1087
+Package 'tjar' does not exist. Attempting to create it...
+
+:app:bintrayUpload (Thread[Task worker for ':',5,main]) completed. Took 2.752 secs.
+:bintrayPublish (Thread[Task worker for ':',5,main]) started.
+
+> Task :bintrayPublish FAILED
+Putting task artifact state for task ':bintrayPublish' into context took 0.0 secs.
+Up-to-date check for task ':bintrayPublish' took 0.0 secs. It is not up-to-date because:
+  Task has not declared any outputs.
+
+:bintrayPublish (Thread[Task worker for ':',5,main]) completed. Took 0.268 secs.
+
+FAILURE: Build completed with 2 failures.
+
+1: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task ':app:bintrayUpload'.
+> Could not create package 'true/tt/tjar': HTTP/1.1 401 Unauthorized [message:This resource requires authentication]
+
+* Try:
+Run with --stacktrace option to get the stack trace. Run with --debug option to get more log output. Run with --scan to get full insights.
+==============================================================================
+
+2: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task ':bintrayPublish'.
+> Could not publish 'true/tt/tjar/1.0.1': HTTP/1.1 401 Unauthorized [message:This resource requires authentication]
+
+* Try:
+Run with --stacktrace option to get the stack trace. Run with --debug option to get more log output. Run with --scan to get full insights.
+==============================================================================
+
+* Get more help at https://help.gradle.org
+
+BUILD FAILED in 5s
+28 actionable tasks: 25 executed, 3 up-to-date

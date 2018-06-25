@@ -59,13 +59,102 @@ android {
     }
 }
 
-apply plugin: 'com.novoda.bintray-release'
-publish {
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
+//apply plugin: 'com.novoda.bintray-release'
+
+project.ext.group = 'dc.test.hh'
+project.ext.archivesBaseName = 'hh'
+project.ext.version = '0.1.2'
+project.ext.pomDesc = 'this is hhhhhhhhhhhhhhhhh....'
+
+def siteUrl = 'https://github.com/senRsl/cn'   // 项目的主页
+def gitUrl = 'git@github.com:senRsl/cn.git'   // Git仓库的url
+
+
+task jarMyLib(type: Jar, dependsOn: ['build']) {
+    archiveName = 'pub.jar'
+    from('build/intermediates/classes/release')
+    destinationDir = file('build/libs')
+    exclude('android')//去掉android这个文件夹
+    exclude('dc/hhh/BuildConfig.class')
+    exclude('dc/hhh/BuildConfig\$*.class')
+    exclude('**/R.class')
+    exclude('**/R\$*.class')
+
+    manifest {
+        attributes(
+                'Implementation-Title': "${project.name}",
+                'Implementation-Version': "${project.ext.version}",
+                'Built-Date': new Date().getDateTimeString(),
+                'Built-With':
+                        "gradle-${project.getGradle().getGradleVersion()},groovy-${GroovySystem.getVersion()}",
+                'Created-By':
+                        'senRsl Based Java ' + System.getProperty('java.version') + ' (' + System.getProperty('java.vendor') + ')')
+    }
+}
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+publishing {
+    publications {
+        library(MavenPublication) {
+            groupId project.ext.group
+            artifactId project.ext.archivesBaseName
+            version project.ext.version
+            // Release AAR, Sources, and JavaDoc
+//            artifact "$buildDir/outputs/aar/pub-release.aar"
+            artifact jarMyLib
+            artifact sourcesJar
+            artifact javadocJar
+        }
+    }
+}
+
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+bintray {
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+//    configurations = ['archives']
+    publications = [ 'library' ]
+
+    pkg {
+        repo = "tt"
+        name = project.ext.archivesBaseName  //发布到JCenter上的项目名字
+        userOrg = "senrsl"
+        websiteUrl = siteUrl
+        vcsUrl = gitUrl
+        licenses = ["Apache-2.0"]
+        publish = true
+
+        version {
+            name = project.ext.version
+            desc = project.ext.pomDesc + ' version ' + project.ext.version
+            gpg {
+                sign = true //bintray配置了私钥跟公钥，这里开启了这个，会上传后自动生成asc文件
+                passphrase = "senRsl2018"
+            }
+        }
+    }
+}
+/*publish {
     repoName = "tt"
     userOrg = 'senrsl'
     groupId = 'dc.test.hh'
     artifactId = 'hh'
-    publishVersion = '0.1.1'
+    publishVersion = '0.1.2'
     desc = 'bintraybuild project'
     website = 'https://dcjz.ml'
-}
+}*/

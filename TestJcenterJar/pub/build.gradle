@@ -1,0 +1,454 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 27
+
+
+
+    defaultConfig {
+        minSdkVersion 19
+        targetSdkVersion 27
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+}
+
+
+
+//乱
+
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'com.github.dcendents.android-maven'
+
+project.ext.group = 'dc.test.pub'
+project.ext.archivesBaseName = 'pub'
+project.ext.version = '0.2.10'
+project.ext.pomDesc = 'Pub tjar....'
+
+def siteUrl = 'https://github.com/senRsl/cn'   // 项目的主页
+def gitUrl = 'git@github.com:senRsl/cn.git'   // Git仓库的url
+group = "dc.test.pub"            // Maven Group ID for the artifact，一般填你唯一的包名
+//install {
+//    repositories.mavenInstaller {
+//        // This generates POM.xml with proper parameters
+//        pom {
+//            project {
+//                packaging 'jar'
+//                // Add your description here
+//                name 'Pubbbbbbbbbbb'     //项目的描述 你可以多写一点
+//                url siteUrl
+//                // Set your license
+//                licenses {
+//                    license {
+//                        name 'The Apache Software License, Version 2.0'
+//                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+//                    }
+//                }
+//                developers {
+//                    developer {
+//                        id 'dcjz'      //填写的一些基本信息
+//                        name 'senRsl'
+//                        email 'dong_M@yeah.net'
+//                    }
+//                }
+//                scm {
+//                    connection gitUrl
+//                    developerConnection gitUrl
+//                    url siteUrl
+//                }
+//            }
+//        }
+//    }
+//}
+
+//task makeJar(type:org.gradle.api.tasks.bundling.Jar) {
+//    //指定生成的jar名
+//    baseName 'tjar'
+//    //从哪里打包class文件
+//    from('build/intermediates/classes/release/dc/test/pub/')
+//    //打包到jar后的目录结构
+//    into('dc/test/pub')
+//    //去掉不需要打包的目录和文件
+//    exclude('BuildConfig.class', 'R.class',"MainActivity.class")
+//    //去掉R$ 开头的文件
+//    exclude{it.name.startsWith('R$');}
+//
+////    classifier = 'pub'
+//    manifest {
+//        attributes(
+//                'Implementation-Title': "${project.name}",
+//                'Implementation-Version': "${project.ext.version}",
+//                'Built-Date': new Date().getDateTimeString(),
+//                'Built-With':
+//                        "gradle-${project.getGradle().getGradleVersion()},groovy-${GroovySystem.getVersion()}",
+//                'Created-By':
+//                        'senRsl@Java ' + System.getProperty('java.version') + ' (' + System.getProperty('java.vendor') + ')')
+//    }
+//}
+task jarMyLib(type: Jar, dependsOn: ['build']) {
+    archiveName = 'pub.jar'
+    from('build/intermediates/classes/release')
+    destinationDir = file('build/libs')
+    exclude('android')//去掉android这个文件夹
+    exclude('dc/test/pub/BuildConfig.class')
+    exclude('dc/test/pub/BuildConfig\$*.class')
+    exclude('**/R.class')
+    exclude('**/R\$*.class')
+
+    manifest {
+        attributes(
+                'Implementation-Title': "${project.name}",
+                'Implementation-Version': "${project.ext.version}",
+                'Built-Date': new Date().getDateTimeString(),
+                'Built-With':
+                        "gradle-${project.getGradle().getGradleVersion()},groovy-${GroovySystem.getVersion()}",
+                'Created-By':
+                        'senRsl Used Java ' + System.getProperty('java.version') + ' (' + System.getProperty('java.vendor') + ')')
+    }
+}
+//makeJar.dependsOn(clearJar, build)
+
+//task makeJar(dependsOn: ['compileReleaseJavaWithJavac'], type: Jar) {
+//    delete 'build/libs/yourname1.jar'
+//    delete 'build/libs/yourname2.jar'
+//    appendix = "demo"
+//    baseName = "androidJar"
+//    version = "1.0.0"
+//    classifier = "release"
+//    //后缀名
+//    extension = "jar"
+//    //最终的 Jar 包名，如果没设置，默认为 [baseName]-[appendix]-[version]-[classifier].[extension]
+//    archiveName = "yourname1.jar"
+//    //需打包的资源所在的路径集
+//    def srcClassDir = [project.buildDir.absolutePath + "/intermediates/classes/release"];
+//    //初始化资源路径集
+//    from srcClassDir
+//    //去除路径集下部分的资源
+//    exclude "okhttphelper/clz/com/okhttphelper/BuildConfig.class"
+//    exclude "**/R.class"
+//    exclude "**/R\$*.class"
+//    //只导入资源路径集下的部分资源
+//    include "okhttphelper/clz/com/okhttphelper/**/*.class"
+//
+//}
+
+//task proguard(type: ProGuardTask, dependsOn: makeJar) {
+////  输入路径
+//    injars "build/libs/tjar.jar"
+////  输出路径
+//    outjars 'build/libs/tjar-pro.jar'
+////  添加配置信息
+//    configuration 'proguard-rules.pro'
+//}
+
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+//task sourcesJar(type: aar) {
+//}
+//artifacts {
+//    archives jarMyLib
+//    archives javadocJar
+//    archives sourcesJar
+//}
+
+
+publishing {
+    publications {
+        library(MavenPublication) {
+            groupId project.ext.group
+            artifactId project.ext.archivesBaseName
+            version project.ext.version
+            // Release AAR, Sources, and JavaDoc
+//            artifact "$buildDir/outputs/aar/pub-release.aar"
+            artifact jarMyLib
+            artifact sourcesJar
+            artifact javadocJar
+        }
+    }
+}
+
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+bintray {
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+//    configurations = ['archives']
+    publications = [ 'library' ]
+
+    pkg {
+        repo = "tt"
+        name = "tjar"   //发布到JCenter上的项目名字
+        userOrg = "senrsl"
+        websiteUrl = siteUrl
+        vcsUrl = gitUrl
+        licenses = ["Apache-2.0"]
+        publish = true
+
+        version {
+            name = project.ext.version
+            desc = project.ext.pomDesc + ' version ' + project.ext.version
+            gpg {
+                sign = true //bintray配置了私钥跟公钥，这里开启了这个，会上传后自动生成asc文件
+                passphrase = "gpg的密码"
+            }
+        }
+    }
+}
+
+
+//bintray {
+//    user = 'dcjz'
+//    key = 'x'
+//
+////    configurations = ['deployables'] //When uploading configuration files
+////    // - OR -
+////    publications = ['mavenStuff'] //When uploading Maven-based publication files
+////    // - AND/OR -
+////    filesSpec { //When uploading any arbitrary files ('filesSpec' is a standard Gradle CopySpec)
+////        from 'arbitrary-files'
+////        into 'standalone_files/level1'
+////        rename '(.+)\\.(.+)', '$1-suffix.$2'
+////    }
+//    dryRun = false //[Default: false] Whether to run this as dry-run, without deploying
+//    publish = true //[Default: false] Whether version should be auto published after an upload
+//    override = false //[Default: false] Whether to override version artifacts already published
+//    //Package configuration. The plugin will use the repo and name properties to check if the package already exists. In that case, there's no need to configure the other package properties (like userOrg, desc, etc).
+//    pkg {
+//        repo = 'tt'
+//        name = 'tjar'
+//        userOrg = 'senrsl' //An optional organization name when the repo belongs to one of the user's orgs
+//        desc = 'what a fantastic package indeed!'
+//        websiteUrl = 'https://github.com/senRsl/cn'
+//        issueTrackerUrl = 'https://github.com/senRsl/cn/issues'
+//        vcsUrl = 'https://github.com/senRsl/cn.git'
+//        licenses = ['Apache-2.0']
+//        labels = ['gear', 'gore', 'gorilla']
+//        publicDownloadNumbers = true
+//        attributes= ['a': ['ay1', 'ay2'], 'b': ['bee'], c: 'cee'] //Optional package-level attributes
+//
+//        githubRepo = 'senRsl/cn' //Optional Github repository
+//        githubReleaseNotesFile = 'README.md' //Optional Github readme file
+//
+//        //Optional Debian details
+////        debian {
+////            distribution = 'squeeze'
+////            component = 'main'
+////            architecture = 'i386,noarch,amd64'
+////        }
+//        //Optional version descriptor
+//        version {
+//            name = '0.2.2-Final' //Bintray logical version name
+//            desc = //Optional - Version-specific description'
+//            released  = new Date() //Optional - Date of the version release. 2 possible values: date in the format of 'yyyy-MM-dd'T'HH:mm:ss.SSSZZ' OR a java.util.Date instance
+//            vcsTag = '0.2.2'
+//            attributes = ['gradle-plugin': 'com.use.less:com.use.less.gradle:gradle-useless-plugin'] //Optional version-level attributes
+//            //Optional configuration for GPG signing
+////            gpg {
+////                sign = true //Determines whether to GPG sign the files. The default is false
+////                passphrase = 'x' //Optional. The passphrase for GPG signing'
+////            }
+//            //Optional configuration for Maven Central sync of the version
+////            mavenCentralSync {
+////                sync = true //[Default: true] Determines whether to sync the version to Maven Central.
+////                user = 'userToken' //OSS user token: mandatory
+////                password = 'paasword' //OSS user password: mandatory
+////                close = '1' //Optional property. By default the staging repository is closed and artifacts are released to Maven Central. You can optionally turn this behaviour off (by puting 0 as value) and release the version manually.
+////            }
+//        }
+//    }
+//}
+//
+
+
+
+//apply plugin: 'com.github.dcendents.android-maven'
+//apply plugin: 'com.jfrog.bintray'
+
+
+
+
+//version = "0.2.1"
+//
+//def siteUrl = 'https://senrsl.blogspot.com/'      // 项目的主页   这个是说明，可随便填
+//def gitUrl = 'https://senrsl.blogspot.com/pub/'      // Git仓库的url  这个是说明，可随便填
+//group = "dc.test.pub"    // 这里是groupId ,必须填写  一般填你唯一的包名，对应com.squareup.okhttp3:okhttp:3.4.1中的com.squareup.okhttp3部分
+//
+//install {
+//    repositories.mavenInstaller {
+//        // This generates POM.xml with proper parameters
+//        pom {
+//            project {
+//                packaging 'jar'
+//                // Add your description here
+//                name 'Tjar'     //项目描述
+//                url siteUrl
+//                // Set your license
+//                licenses {
+//                    license {
+//                        name 'The Apache Software License, Version 2.0'
+//                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+//                    }
+//                }
+//                developers {
+//                    developer {
+//                        id 'dcjz'        //填写开发者的一些基本信息
+//                        name 'senRsl'    //填写开发者的一些基本信息
+//                        email 'dong_M@yeah.net'   //填写开发者的一些基本信息
+//                    }
+//                }
+//                scm {
+//                    connection gitUrl
+//                    developerConnection gitUrl
+//                    url siteUrl
+//                }
+//            }
+//        }
+//    }
+//}
+//task sourcesJar(type: Jar) {
+//    from android.sourceSets.main.java.srcDirs
+//    classifier = 'sources'
+//}
+//task javadoc(type: Javadoc) {
+//    options {
+//        encoding "UTF-8"
+//        charSet 'UTF-8'
+//        author true
+//        version true
+//        links "http://docs.oracle.com/javase/7/docs/api"
+//    }
+//    source = android.sourceSets.main.java.srcDirs
+//    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+//}
+//task javadocJar(type: Jar, dependsOn: javadoc) {
+//    classifier = 'javadoc'
+//    from javadoc.destinationDir
+//}
+//artifacts {
+//    archives javadocJar
+//    archives sourcesJar
+//}
+//
+//Properties properties = new Properties()
+//properties.load(project.rootProject.file('local.properties').newDataInputStream())
+//bintray {
+//    user = properties.getProperty("bintray.user")    //读取 local.properties 文件里面的 bintray.user
+//    key = properties.getProperty("bintray.apikey")   //读取 local.properties 文件里面的 bintray.apikey
+//    configurations = ['archives']
+//    pkg {
+//        repo = "tt"
+//        name = "tjar"    //发布到JCenter上的项目名字，必须填写，对应com.squareup.okhttp3:okhttp:3.4.1中的okhttp
+//        userOrg = 'senrsl'
+////        publishVersion = '0.2.0'//发布到JCenter上的项目版本号
+//        websiteUrl = siteUrl
+//        vcsUrl = gitUrl
+//        licenses = ["Apache-2.0"]
+//        publish = true
+//    }
+//}
+
+
+
+
+
+//apply plugin: 'com.novoda.bintray-release'
+//
+//import com.novoda.gradle.release.*
+//
+//def fooJarPublish(String publicationName, Project project) {
+//    project.task(publicationName + 'FooJar', type: Jar) {
+//        classifier = 'foo'
+//        from sourceSets.main.output
+//    }
+//}
+//
+//publish {
+//    repoName = "tt"
+//    userOrg = 'senrsl'
+//    groupId = 'dc.test.pub'
+//    artifactId = 'tjar'
+//    publishVersion = '0.1.5'
+//    desc = 'this is desc aaaaaa'
+//    website = 'https://dcjz.ml'
+//    dryRun = false
+//    bintrayUser = project.properties['bintrayUser']
+//    bintrayKey = project.properties['bintrayKey']
+//
+//    publishing {
+//        publications {
+//            fooPublication(MavenPublication) {
+//                groupId project.publish.groupId
+//                artifactId project.publish.artifactId
+//                publishVersion project.publish.publishVersion
+//
+//                Artifacts artifacts = new JavaArtifacts()
+//                (artifacts.all(it.name, project) + fooJarPublish(it.name, project)).each {
+//                    delegate.artifact it
+//                }
+//                from artifacts.from(project)
+//            }
+//        }
+//    }
+//
+//    publications = ['fooPublication']
+//}
+//
+//////先清除存在的jar
+////task clearJar(type: Delete) {
+////    delete fileTree(dir: 'build/libs' , include: 'tjar*.jar')
+////}
+//////makejar打包jar包
+////task makeJar(type:org.gradle.api.tasks.bundling.Jar) {
+////    //指定生成的jar名
+////    baseName 'tjar-0.1.3'
+////    //从哪里打包class文件
+////    from('build/intermediates/classes/release/dc/test/pub/')
+////    //打包到jar后的目录结构
+////    into('dc/test/pub')
+////    //去掉不需要打包的目录和文件
+////    exclude('BuildConfig.class', 'R.class',"MainActivity.class")
+////    //去掉R$ 开头的文件
+////    exclude{it.name.startsWith('R$');}
+////}
+////makeJar.dependsOn(clearJar, build)
+////
+//////拷贝javadoc文件
+////task copyDoc(type: Copy) {
+////    from "${buildDir}/docs/"
+////    into "docs"
+////}
+
+
